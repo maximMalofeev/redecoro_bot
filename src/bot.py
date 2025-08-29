@@ -42,9 +42,22 @@ def promocode_callback(update: Update, context: CallbackContext):
         )
     else:
         query.answer()
-        query.edit_message_text(
-            f"Пожалуйста, подпишитесь на канал {config.CHANNEL_ID} и попробуйте снова."
-        )
+        current_text = query.message.text
+        new_message_text = f"Пожалуйста, подпишитесь на канал {config.CHANNEL_ID} и попробуйте снова."
+        if current_text == new_message_text:
+            return # Avoid updating the message if it's already the same
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    "Получить промокод",
+                    callback_data=f"get_promocode_{user_id}",
+                )
+            ]
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        query.edit_message_text(new_message_text, reply_markup=reply_markup)
 
 
 def main():
